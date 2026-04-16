@@ -403,7 +403,7 @@ module.exports = function ({ addPrefixRoute, json, readBody }) {
           tokenCache.expiresAt = Date.now() + ((tokens.expires_in || 3600) - 60) * 1000;
 
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-          res.end(callbackHtml(true, 'Your Microsoft account has been connected. You can close this tab and return to DevOps Pilot.'));
+          res.end(callbackHtml(true, 'Your Microsoft account has been connected. You can close this tab and return to Symphonee.'));
           return true;
         } catch (e) {
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });

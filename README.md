@@ -1,6 +1,6 @@
-# Teams Bridge -- DevOps Pilot Plugin
+# Teams Bridge -- Symphonee Plugin
 
-Read Microsoft Teams channels, reply to threads, and post messages without leaving DevOps Pilot.
+Read Microsoft Teams channels, reply to threads, and post messages without leaving Symphonee.
 
 ## Features
 
@@ -26,12 +26,12 @@ Read Microsoft Teams channels, reply to threads, and post messages without leavi
    - Chat.ReadWrite
    - ChatMessage.Send
 4. Create a client secret
-5. In DevOps Pilot Settings > Plugins > Teams Bridge, enter the Client ID and Secret
+5. In Symphonee Settings > Plugins > Teams Bridge, enter the Client ID and Secret
 6. Click "Sign in with Microsoft" in the Teams tab
 
 ## Installation
 
-Copy the plugin folder to your DevOps Pilot plugins directory:
+Copy the plugin folder to your Symphonee plugins directory:
 
 ```
 dashboard/plugins/teams/
@@ -40,7 +40,7 @@ dashboard/plugins/teams/
 Or symlink it:
 
 ```bash
-mklink /D "path\to\DevOps-Pilot\dashboard\plugins\teams" "path\to\devops-pilot-plugin-teams"
+mklink /D "path\to\Symphonee\dashboard\plugins\teams" "path\to\symphonee-plugin-teams"
 ```
 
 ## Scripts

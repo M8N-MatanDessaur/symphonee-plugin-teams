@@ -1,6 +1,6 @@
 ## Teams Bridge Plugin -- AI Instructions
 
-You have access to a Microsoft Teams integration plugin via the DevOps Pilot API. This lets you read channels, reply to threads, and post messages -- all without leaving DevOps Pilot.
+You have access to a Microsoft Teams integration plugin via the Symphonee API. This lets you read channels, reply to threads, and post messages -- all without leaving Symphonee.
 
 **All routes are at** `http://127.0.0.1:3800/api/plugins/teams/`
 
@@ -26,7 +26,7 @@ These scripts run instantly and provide formatted output. **Always prefer these 
 | `Get-TeamsSummary.ps1` | Full overview -- teams, channels, chats | `powershell.exe -ExecutionPolicy Bypass -NoProfile -File "./dashboard/plugins/teams/scripts/Get-TeamsSummary.ps1"` |
 | `Get-Channels.ps1` | List all teams and channels with IDs | `powershell.exe -ExecutionPolicy Bypass -NoProfile -File "./dashboard/plugins/teams/scripts/Get-Channels.ps1"` |
 | `Get-RecentMessages.ps1` | Fetch recent messages from a channel | `powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "./dashboard/plugins/teams/scripts/Get-RecentMessages.ps1 -TeamId 'TEAM_ID' -ChannelId 'CHANNEL_ID'"` |
-| `Send-Message.ps1` | Send a message to a channel | `powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "./dashboard/plugins/teams/scripts/Send-Message.ps1 -TeamId 'TEAM_ID' -ChannelId 'CHANNEL_ID' -Message 'Hello from DevOps Pilot'"` |
+| `Send-Message.ps1` | Send a message to a channel | `powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "./dashboard/plugins/teams/scripts/Send-Message.ps1 -TeamId 'TEAM_ID' -ChannelId 'CHANNEL_ID' -Message 'Hello from Symphonee'"` |
 
 ### Setup Instructions
 
@@ -37,7 +37,7 @@ The plugin uses OAuth2 delegated flow with Microsoft Graph API. To set up:
 3. Under **API permissions**, add delegated permissions: User.Read, Team.ReadBasic.All, Channel.ReadBasic.All, ChannelMessage.Read.All, ChannelMessage.Send, Chat.ReadWrite, ChatMessage.Send
 4. Under **Certificates & secrets**, create a new client secret
 5. Copy the Application (Client) ID and the client secret value
-6. In DevOps Pilot, go to **Settings > Plugins > Teams Bridge** and paste both values
+6. In Symphonee, go to **Settings > Plugins > Teams Bridge** and paste both values
 7. Click **Sign in with Microsoft** in the Teams tab
 
 ### Configuration
@@ -72,7 +72,7 @@ curl -s http://127.0.0.1:3800/api/plugins/teams/channels/TEAM_ID/CHANNEL_ID/mess
 # Send a message to a channel (REQUIRES USER PERMISSION)
 curl -s -X POST http://127.0.0.1:3800/api/plugins/teams/messages/send \
   -H "Content-Type: application/json" \
-  -d '{"teamId":"TEAM_ID","channelId":"CHANNEL_ID","text":"Hello from DevOps Pilot"}'
+  -d '{"teamId":"TEAM_ID","channelId":"CHANNEL_ID","text":"Hello from Symphonee"}'
 
 # Reply to a thread (REQUIRES USER PERMISSION)
 curl -s -X POST http://127.0.0.1:3800/api/plugins/teams/messages/send \

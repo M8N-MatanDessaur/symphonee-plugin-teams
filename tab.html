@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script src="/plugins/sdk/devops-pilot-sdk.js"></script>
+<script src="/plugins/sdk/symphonee-sdk.js"></script>
 <style>
   * { box-sizing: border-box; }
   ::-webkit-scrollbar { width: 7px; height: 7px; }
@@ -297,9 +297,9 @@
         <li>Under <strong>API permissions</strong>, add delegated permissions: User.Read, Team.ReadBasic.All, Channel.ReadBasic.All, ChannelMessage.Read.All, ChannelMessage.Send, Chat.ReadWrite, ChatMessage.Send</li>
         <li>Under <strong>Certificates & secrets</strong>, create a new client secret and copy the value</li>
         <li>Copy the <strong>Application (Client) ID</strong> from the app Overview page</li>
-        <li>In DevOps Pilot, go to <strong>Settings > Plugins > Teams Bridge</strong> and paste both values</li>
+        <li>In Symphonee, go to <strong>Settings > Plugins > Teams Bridge</strong> and paste both values</li>
       </ol>
-      <button class="btn-secondary" onclick="DevOpsPilot.openSettings('plugins')">Open Settings</button>
+      <button class="btn-secondary" onclick="Symphonee.openSettings('plugins')">Open Settings</button>
     </div>
     <div id="setup-needs-login" style="display:none">
       <p style="color:var(--subtext1);font-size:12px;margin:0 0 16px">Client ID and secret are configured. Click below to sign in.</p>
@@ -454,7 +454,7 @@ async function startAuth() {
     var data = await resp.json();
     if (data.url) {
       window.open(data.url, '_blank');
-      DevOpsPilot.toast('Sign in with your Microsoft account in the browser window', 'info');
+      Symphonee.toast('Sign in with your Microsoft account in the browser window', 'info');
       // Poll for connection
       var attempts = 0;
       var poll = setInterval(async function() {
@@ -467,26 +467,26 @@ async function startAuth() {
             clearInterval(poll);
             connectedUser.displayName = st.displayName || '';
             connectedUser.email = st.email || '';
-            DevOpsPilot.toast('Connected to Microsoft Teams', 'success');
+            Symphonee.toast('Connected to Microsoft Teams', 'success');
             showMain();
           }
         } catch (_) {}
       }, 2000);
     } else if (data.error) {
-      DevOpsPilot.toast(data.error, 'error');
+      Symphonee.toast(data.error, 'error');
     }
   } catch (e) {
-    DevOpsPilot.toast('Failed to start auth: ' + e.message, 'error');
+    Symphonee.toast('Failed to start auth: ' + e.message, 'error');
   }
 }
 
 async function disconnect() {
   try {
     await fetch(API + '/auth/disconnect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
-    DevOpsPilot.toast('Disconnected from Microsoft Teams', 'info');
+    Symphonee.toast('Disconnected from Microsoft Teams', 'info');
     showSetup('login');
   } catch (e) {
-    DevOpsPilot.toast('Failed to disconnect: ' + e.message, 'error');
+    Symphonee.toast('Failed to disconnect: ' + e.message, 'error');
   }
 }
 
@@ -693,7 +693,7 @@ function formatMessageText(text) {
   // Escape HTML first
   var s = esc(text);
   // AB# references
-  s = s.replace(/AB#(\d+)/g, '<span class="ab-ref" onclick="DevOpsPilot.viewWorkItem($1)">AB#$1</span>');
+  s = s.replace(/AB#(\d+)/g, '<span class="ab-ref" onclick="Symphonee.viewWorkItem($1)">AB#$1</span>');
   // URLs
   s = s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   // @mentions (already stripped from HTML as @Name)
@@ -750,10 +750,10 @@ async function sendMessage() {
       if (result.ok) {
         input.value = '';
         autoGrow(input);
-        DevOpsPilot.toast('Message sent', 'success');
+        Symphonee.toast('Message sent', 'success');
         loadChannelMessages();
       } else {
-        DevOpsPilot.toast('Failed to send: ' + (result.error || 'Unknown error'), 'error');
+        Symphonee.toast('Failed to send: ' + (result.error || 'Unknown error'), 'error');
       }
     } else if (currentMode === 'chat') {
       var resp = await fetch(API + '/chats/' + currentChatId + '/send', {
@@ -765,14 +765,14 @@ async function sendMessage() {
       if (result.ok) {
         input.value = '';
         autoGrow(input);
-        DevOpsPilot.toast('Message sent', 'success');
+        Symphonee.toast('Message sent', 'success');
         loadChatMessages();
       } else {
-        DevOpsPilot.toast('Failed to send: ' + (result.error || 'Unknown error'), 'error');
+        Symphonee.toast('Failed to send: ' + (result.error || 'Unknown error'), 'error');
       }
     }
   } catch (e) {
-    DevOpsPilot.toast('Error: ' + e.message, 'error');
+    Symphonee.toast('Error: ' + e.message, 'error');
   }
   input.disabled = false;
   input.focus();
@@ -848,13 +848,13 @@ async function sendThreadReply() {
     if (result.ok) {
       input.value = '';
       autoGrow(input);
-      DevOpsPilot.toast('Reply sent', 'success');
+      Symphonee.toast('Reply sent', 'success');
       openThread(currentThreadMessageId); // Refresh
     } else {
-      DevOpsPilot.toast('Failed to reply: ' + (result.error || 'Unknown error'), 'error');
+      Symphonee.toast('Failed to reply: ' + (result.error || 'Unknown error'), 'error');
     }
   } catch (e) {
-    DevOpsPilot.toast('Error: ' + e.message, 'error');
+    Symphonee.toast('Error: ' + e.message, 'error');
   }
   input.disabled = false;
   input.focus();
@@ -863,14 +863,14 @@ async function sendThreadReply() {
 // -- AI Actions --
 function aiSummarize() {
   if (currentMode === 'channel' && currentTeamId && currentChannelId) {
-    DevOpsPilot.askAi(
+    Symphonee.askAi(
       'Summarize the recent messages in the Teams channel "' + currentChannelName + '" (team: "' + currentTeamName + '").\n\n'
       + 'Run this to get messages:\n'
       + 'powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "./dashboard/plugins/teams/scripts/Get-RecentMessages.ps1 -TeamId \'' + currentTeamId + '\' -ChannelId \'' + currentChannelId + '\'"\n\n'
       + 'Provide a concise summary of key discussions, decisions, and action items. Mention AB# references if any.'
     );
   } else if (currentMode === 'chat') {
-    DevOpsPilot.askAi(
+    Symphonee.askAi(
       'Summarize the recent messages in my Teams chat "' + currentChatName + '".\n\n'
       + 'Run: curl -s http://127.0.0.1:3800/api/plugins/teams/chats/' + currentChatId + '/messages?top=30\n\n'
       + 'Provide a concise summary of the conversation.'
@@ -879,8 +879,8 @@ function aiSummarize() {
 }
 
 function aiPostStandup() {
-  if (!currentTeamId || !currentChannelId) { DevOpsPilot.toast('Select a channel first', 'info'); return; }
-  DevOpsPilot.askAi(
+  if (!currentTeamId || !currentChannelId) { Symphonee.toast('Select a channel first', 'info'); return; }
+  Symphonee.askAi(
     'Generate a standup summary from my Azure DevOps work items and offer to post it to the Teams channel "' + currentChannelName + '".\n\n'
     + '1. First, run: powershell.exe -ExecutionPolicy Bypass -NoProfile -File "./scripts/Get-StandupSummary.ps1"\n'
     + '2. Format the output nicely for Teams.\n'
@@ -893,8 +893,8 @@ function aiPostStandup() {
 }
 
 function aiSharePR() {
-  if (!currentTeamId || !currentChannelId) { DevOpsPilot.toast('Select a channel first', 'info'); return; }
-  DevOpsPilot.askAi(
+  if (!currentTeamId || !currentChannelId) { Symphonee.toast('Select a channel first', 'info'); return; }
+  Symphonee.askAi(
     'Check for open pull requests and offer to share a status update in the Teams channel "' + currentChannelName + '".\n\n'
     + '1. First check the active repo: curl -s http://127.0.0.1:3800/api/ui/context\n'
     + '2. Then get open PRs: curl -s "http://127.0.0.1:3800/api/github/pulls?repo=REPO_NAME&state=open"\n'
@@ -907,7 +907,7 @@ function aiSharePR() {
 
 function aiDraftMessage() {
   var target = currentMode === 'channel' ? ('channel "' + currentChannelName + '"') : ('chat "' + currentChatName + '"');
-  DevOpsPilot.askAi(
+  Symphonee.askAi(
     'Help me draft a message for the Teams ' + target + '.\n\n'
     + 'Ask me what I want to say, then draft a professional message. '
     + 'Once I approve it, post it using the appropriate endpoint.\n'
@@ -917,7 +917,7 @@ function aiDraftMessage() {
 
 function aiDraftReply() {
   var target = currentMode === 'channel' ? ('channel "' + currentChannelName + '"') : ('chat "' + currentChatName + '"');
-  DevOpsPilot.askAi(
+  Symphonee.askAi(
     'Help me draft a reply in the Teams ' + target + '.\n\n'
     + 'First fetch recent messages so you understand the context:\n'
     + (currentMode === 'channel'
@@ -928,7 +928,7 @@ function aiDraftReply() {
 }
 
 // -- Tab activated auto-refresh --
-DevOpsPilot.on('tabActivated', function() {
+Symphonee.on('tabActivated', function() {
   if (currentMode === 'channel' && currentTeamId && currentChannelId) {
     loadChannelMessages();
   } else if (currentMode === 'chat' && currentChatId) {

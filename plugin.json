@@ -2,7 +2,7 @@
   "id": "teams",
   "name": "Teams Bridge",
   "version": "1.0.0",
-  "description": "Read Microsoft Teams channels, reply to threads, and post messages without leaving DevOps Pilot",
+  "description": "Read Microsoft Teams channels, reply to threads, and post messages without leaving Symphonee",
   "icon": "message-square",
   "tint": "75, 75, 200",
   "instructions": "instructions.md",
